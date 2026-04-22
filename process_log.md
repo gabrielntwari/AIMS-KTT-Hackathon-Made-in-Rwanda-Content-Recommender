@@ -9,11 +9,11 @@
 | Time | What I worked on |
 |---|---|
 | Hour 1 | Read the brief carefully. Understood the two core requirements: (1) content-based recommender with TF-IDF, (2) offline artisan lead workflow. Set up project folder, generated synthetic data with `generator.py`. |
-| Hour 2 | Built first TF-IDF index. Ran eval loop — got NDCG@5 ≈ 0.00. Diagnosed root cause: catalog titles like "Premium Kigali Leather" had zero token overlap with queries like "leather boots". All evaluated queries missed top-5, avg rank ~36. |
-| Hour 3 | Rewrote `generator.py` so product titles and descriptions include real search terms (e.g. "boots shoes sandals cowhide"). NDCG rose to ~0.30. Identified next bottleneck: French and misspelled queries still failing, avg rank still ~60. |
-| Hour 4 | Added fuzzy spell correction (rapidfuzz) and FR/KIN→EN translation dictionaries. NDCG rose to ~0.40. Added hybrid word+char TF-IDF vectorizer. Discovered catalog had duplicate titles — deduplication brought NDCG to ~0.80, with significant improvement in avg rank and top-5 coverage. |
-| Hour 5 | Built `Recommender.py` with CLI (`--q` argument), local-boost logic, fairness cap, and fallback curation. Debugged sklearn version mismatch (pickle saved on 1.8.0, loaded on 1.6.1) — rolled back to 1.6.1 and re-saved pickle. Final NDCG stabilised at ~0.80. |
-| Hour 6 | Wrote `dispatcher.md` — offline artisan SMS workflow, unit economics, Kinyarwanda SMS version, 3-month pilot plan. Wrote `eval.ipynb` with full metric progression. Wrote `README.md`. |
+| Hour 1.5 | Built first TF-IDF index. Ran eval loop — got NDCG@5 ≈ 0.00. Diagnosed root cause: catalog titles like "Premium Kigali Leather" had zero token overlap with queries like "leather boots". All evaluated queries missed top-5, avg rank ~36. |
+| Hour 2 | Rewrote `generator.py` so product titles and descriptions include real search terms (e.g. "boots shoes sandals cowhide"). NDCG rose to ~0.30. Identified next bottleneck: French and misspelled queries still failing, avg rank still ~60. |
+| Hour 3 | Added fuzzy spell correction (rapidfuzz) and FR/KIN→EN translation dictionaries. NDCG rose to ~0.40. Added hybrid word+char TF-IDF vectorizer. Discovered catalog had duplicate titles — deduplication brought NDCG to ~0.80, with significant improvement in avg rank and top-5 coverage. |
+| Hour 4 | Built `Recommender.py` with CLI (`--q` argument), local-boost logic, fairness cap, and fallback curation. Debugged sklearn version mismatch (pickle saved on 1.8.0, loaded on 1.6.1) — rolled back to 1.6.1 and re-saved pickle. Final NDCG stabilised at more than 0.80. |
+| Hour 5 | Wrote `dispatcher.md` — offline artisan SMS workflow, unit economics, Kinyarwanda SMS version, 3-month pilot plan, record the video Wrote `README.md`. |
 
 ---
 
