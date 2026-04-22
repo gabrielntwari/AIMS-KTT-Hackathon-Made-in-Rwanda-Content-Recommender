@@ -17,7 +17,8 @@ class MadeInRwandaRecommender:
             self.tfidf_word, self.tfidf_char, self.tfidf_matrix, \
             self.vocab, self.FR_EN, self.KIN_EN = pickle.load(f)
 
-        self.df = pd.read_csv(catalog_path)
+        self.df = pd.read_csv(catalog_path).drop_duplicates(subset='title').reset_index(drop=True)
+        
 
         # 2. Stopwords
         self.STOPWORDS = {'à','en','de','le','la','les','du','un','une','pour','et'}
@@ -137,6 +138,7 @@ class MadeInRwandaRecommender:
 
 # ── CLI Entry Point ────────────────────────────────────────────────────────────
 if __name__ == "__main__":
+    
     parser = argparse.ArgumentParser(
         description="Made in Rwanda — Niche-First Product Recommender"
     )
