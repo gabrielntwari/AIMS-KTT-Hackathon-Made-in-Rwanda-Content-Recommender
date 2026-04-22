@@ -5,10 +5,10 @@ import random
 random.seed(42)
 np.random.seed(42)
 
+NUM_PRODUCTS = 400
 NUM_QUERIES = 120
 NUM_CLICKS = 5000
 
-# ── CATALOG SPECS ──────────────────────────────────────────────────────────────
 CATEGORY_SPECS = {
     'leather': {
         'products': [
@@ -78,9 +78,7 @@ CATEGORY_SPECS = {
 
 DISTRICTS = ['Kigali', 'Bugesera', 'Musanze', 'Rubavu', 'Huye', 'Gicumbi']
 
-# ── QUERY PAIRS ────────────────────────────────────────────────────────────────
 QUERY_PAIRS = [
-    # English
     ('leather boots',               'Kigali Leather Boots'),
     ('leather shoes',               'Kigali Leather Shoes'),
     ('leather bag',                 'Kigali Leather Handbag'),
@@ -101,7 +99,6 @@ QUERY_PAIRS = [
     ('african shirt',               'Rwandan Cotton Shirt'),
     ('wood sculpture',              'Musanze Wood Sculpture'),
     ('ceramic plate',               'Kigali Ceramic Plate'),
-    # Misspellings
     ('lether botes',                'Kigali Leather Boots'),
     ('lether bag',                  'Kigali Leather Handbag'),
     ('neklace beads',               'Beaded Necklace Kigali'),
@@ -109,7 +106,6 @@ QUERY_PAIRS = [
     ('afican dress',                'Kitenge Dress Kigali'),
     ('jewlery beads',               'Beaded Necklace Kigali'),
     ('cley vase',                   'Clay Vase Bugesera'),
-    # French
     ('cadeau en cuir pour femme',   'Kigali Leather Handbag'),
     ('sac à main cuir',             'Kigali Leather Handbag'),
     ('bottes en cuir',              'Kigali Leather Boots'),
@@ -119,7 +115,6 @@ QUERY_PAIRS = [
     ('collier perles',              'Beaded Necklace Kigali'),
     ('vase argile',                 'Clay Vase Bugesera'),
     ('sac à dos cuir',              'Gicumbi Leather Backpack'),
-    # Kinyarwanda / code-switched
     ("inkweto z'uruhu",             'Kigali Leather Boots'),
     ('agaseke basket Rwanda',       'Agaseke Peace Basket'),
     ('impano yacu leather',         'Kigali Leather Handbag'),
@@ -128,27 +123,41 @@ QUERY_PAIRS = [
 
 
 def generate_catalog():
+    """
+    Generate 400 products with unique SKUs.
+    Each title appears multiple times but with different
+    district, price, and artisan — simulating real catalog
+    variety (e.g. same product sold by different artisans).
+    The recommender deduplicates by title at index-build time.
+    """
+    # Flatten all products across categories
+    all_products = []
+    for category, specs in CATEGORY_SPECS.items():
+        for title, desc in specs['products']:
+            all_products.append((category, specs['material'],
+                                  specs['search_terms'], title, desc))
+
     data = []
     sku = 1000
-
-    for category, specs in CATEGORY_SPECS.items():
-        for title_base, desc_base in specs['products']:
-            district = random.choice(DISTRICTS)
-            data.append({
-                'sku':              f'SKU-{sku}',
-                'title':            title_base,
-                'description':      f"{desc_base}. {specs['search_terms']}",
-                'category':         category,
-                'material':         specs['material'],
-                'origin_district':  district,
-                'price_rwf':        random.randint(5000, 75000),
-                'artisan_id':       f'ART-{random.randint(1, 50)}'
-            })
-            sku += 1
+    for i in range(NUM_PRODUCTS):
+        category, material, search_terms, title, desc = \
+            all_products[i % len(all_products)]   # cycle through products
+        district = random.choice(DISTRICTS)
+        data.append({
+            'sku':             f'SKU-{sku}',
+            'title':           title,
+            'description':     f"{desc}. {search_terms}",
+            'category':        category,
+            'material':        material,
+            'origin_district': district,
+            'price_rwf':       random.randint(5000, 75000),
+            'artisan_id':      f'ART-{random.randint(1, 50)}'
+        })
+        sku += 1
 
     df = pd.DataFrame(data)
     df.to_csv('catalog.csv', index=False)
-    print(f"✅ catalog.csv — {len(df)} unique products, 0 duplicates")
+    print(f"✅ catalog.csv       — {len(df)} products ({df['title'].nunique()} unique titles)")
     return df
 
 
@@ -159,7 +168,7 @@ def generate_queries():
         data.append({'query': query, 'global_best_match': baseline})
     df = pd.DataFrame(data)
     df.to_csv('queries.csv', index=False)
-    print(f"✅ queries.csv  — {len(df)} queries")
+    print(f"✅ queries.csv       — {len(df)} queries")
     return df
 
 
@@ -167,8 +176,7 @@ def generate_click_log():
     skus = pd.read_csv('catalog.csv')['sku'].tolist()
     data = []
     for _ in range(NUM_CLICKS):
-        pos = int(np.random.zipf(2.0))
-        pos = min(pos, 50)
+        pos = min(int(np.random.zipf(2.0)), 50)
         data.append({
             'sku':       random.choice(skus),
             'position':  pos,
@@ -176,7 +184,7 @@ def generate_click_log():
         })
     df = pd.DataFrame(data)
     df.to_csv('click_log.csv', index=False)
-    print(f"✅ click_log.csv — {len(df)} click events")
+    print(f"✅ click_log.csv     — {len(df)} click events")
     return df
 
 
@@ -184,4 +192,3 @@ if __name__ == "__main__":
     generate_catalog()
     generate_queries()
     generate_click_log()
-    print("\n✅ All dataset Generated")
