@@ -18,7 +18,7 @@ who have no smartphone via SMS.
 - CLI interface: `python Recommender.py --q "leather boots"`
 - Offline artisan workflow: weekly SMS digest delivered via cooperative agent
 #### Video Link
-
+https://drive.google.com/file/d/1catD3eRIGl55NpeMSAIwuQiB_fYPgKR5/view?usp=drive_link
 
 ### Performance
 | Metric | Score |
