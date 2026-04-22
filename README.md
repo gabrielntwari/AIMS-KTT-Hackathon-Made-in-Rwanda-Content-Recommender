@@ -17,6 +17,8 @@ who have no smartphone via SMS.
 - Fallback curation when no strong local match exists
 - CLI interface: `python Recommender.py --q "leather boots"`
 - Offline artisan workflow: weekly SMS digest delivered via cooperative agent
+#### Video Link
+
 
 ### Performance
 | Metric | Score |
@@ -34,4 +36,5 @@ pip install -r requirements.txt
 python generator.py
 python Recommender.py --q "leather boots"
 python Recommender.py --q "inkweto"
+python Recommender.py --q "cadeau en cuir pour femme"
 ```
