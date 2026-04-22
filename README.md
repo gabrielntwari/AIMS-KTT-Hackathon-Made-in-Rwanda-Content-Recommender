@@ -22,7 +22,7 @@ who have no smartphone via SMS.
 | Metric | Score |
 |---|---|
 | NDCG@5 | 0.93 |
-| % queries with target in top 5 | 100% |
+| % queries with target in top 5 | more than 90% |
 | Avg rank of target product | 1.3 |
 | Query languages supported | English, French, Kinyarwanda |
 
